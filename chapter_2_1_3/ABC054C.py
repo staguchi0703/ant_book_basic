@@ -21,22 +21,31 @@ import numpy as np
 
 N, M = [int(item) for item in input().split()]
 edge_list = np.array([[int(item) for item in input().split()] for _ in range(M)])
+r_edge_list = edge_list[:, ::-1]
 
-node_cnt = 0
-res_cnt = 0
+edge_list = np.concatenate([edge_list, r_edge_list])
 
+# print(edge_list)
 
-def rec(start_node):
-    if start_node in edge_list[:, 0]:
-        node_cnt += 1
-        for to_node in edge_list[:, 1]:
-            rec(to_node)
+footprint = collections.deque()
+res = 0
 
+def rec(node, res):
+    if len(footprint) == N:
+        res += 1
+        return
     else:
-        if node_cnt == N:
-            res_cnt += 1
-            return
+        for edge in edge_list:
+            if edge[0] == node and edge[1] not in footprint:
+                print(edge)
+                footprint.append(edge[1])
+                rec(edge[1], res)
+                footprint.pop()
 
-    return res_cnt
+    return res
 
-print(rec(1))
+print(rec(1, 0))
+
+
+
+
